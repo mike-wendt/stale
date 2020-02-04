@@ -56,7 +56,11 @@ async function processIssues(
     core.debug(`found issue: ${issue.title} last updated ${issue.updated_at}`);
     let isPr = !!issue.pull_request;
 
-    if ((isPr && args.ignorePrs) || (!isPr && args.ignoreIssues)) {
+    if (isPr && args.ignorePrs) {
+      core.debug(`ignore-prs set, PR found and ignoring`);
+      continue;
+    } else if (!isPr && args.ignoreIssues) {
+      core.debug(`ignore-issues set, issue found and ignoring`);
       continue;
     }
 
