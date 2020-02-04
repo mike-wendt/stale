@@ -16,8 +16,8 @@ type Args = {
   stalePrLabel: string;
   exemptPrLabel: string;
   operationsPerRun: number;
-  ignoreIssues: string;
-  ignorePrs: string;
+  ignoreIssues: boolean;
+  ignorePrs: boolean;
 };
 
 async function run() {
@@ -56,10 +56,10 @@ async function processIssues(
     core.debug(`found issue: ${issue.title} last updated ${issue.updated_at}`);
     let isPr = !!issue.pull_request;
 
-    if (isPr && !!args.ignorePrs) {
+    if (isPr && args.ignorePrs) {
       core.debug(`ignore-prs set, PR found and ignoring`);
       continue;
-    } else if (!isPr && !!args.ignoreIssues) {
+    } else if (!isPr && args.ignoreIssues) {
       core.debug(`ignore-issues set, issue found and ignoring`);
       continue;
     }
@@ -172,8 +172,9 @@ function getAndValidateArgs(): Args {
     operationsPerRun: parseInt(
       core.getInput('operations-per-run', {required: true})
     ),
-    ignoreIssues: core.getInput('ignore-issues'),
-    ignorePrs: core.getInput('ignore-prs')
+    ignoreIssues:
+      (core.getInput('ingore-issues') || 'false').toUpperCase() === 'TRUE',
+    ignorePrs: (core.getInput('ingore-prs') || 'false').toUpperCase() === 'TRUE'
   };
 
   for (var numberInput of [
