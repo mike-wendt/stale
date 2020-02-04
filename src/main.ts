@@ -16,6 +16,8 @@ type Args = {
   stalePrLabel: string;
   exemptPrLabel: string;
   operationsPerRun: number;
+  ignoreIssues: boolean;
+  ignorePrs: boolean;
 };
 
 async function run() {
@@ -53,6 +55,10 @@ async function processIssues(
   for (var issue of issues.data.values()) {
     core.debug(`found issue: ${issue.title} last updated ${issue.updated_at}`);
     let isPr = !!issue.pull_request;
+    
+    if ((isPr && ignorePrs) || (!isPr && ignoreIssues)) {
+      continue;
+    }
 
     let staleMessage = isPr ? args.stalePrMessage : args.staleIssueMessage;
     if (!staleMessage) {
@@ -161,7 +167,9 @@ function getAndValidateArgs(): Args {
     exemptPrLabel: core.getInput('exempt-pr-label'),
     operationsPerRun: parseInt(
       core.getInput('operations-per-run', {required: true})
-    )
+    ),
+    ignoreIssues: !!core.getInput('ignore-issues'),
+    ignorePrs: !!core.getInput('ignore-prs')
   };
 
   for (var numberInput of [
