@@ -28,6 +28,12 @@ inputs:
   operations-per-run:
     description: 'The maximum number of operations per run, used to control rate limiting'
     default: 30
+  ignore-issues:
+    description: 'Ignore issues when searching for stale items'
+    default: false
+  ignore-prs:
+    description: 'Ignore pull requests when searching for stale items'
+    default: false
 runs:
   using: 'node12'
   main: 'lib/main.js'
