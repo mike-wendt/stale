@@ -55,8 +55,8 @@ async function processIssues(
   for (var issue of issues.data.values()) {
     core.debug(`found issue: ${issue.title} last updated ${issue.updated_at}`);
     let isPr = !!issue.pull_request;
-    
-    if ((isPr && ignorePrs) || (!isPr && ignoreIssues)) {
+
+    if ((isPr && args.ignorePrs) || (!isPr && args.ignoreIssues)) {
       continue;
     }
 
